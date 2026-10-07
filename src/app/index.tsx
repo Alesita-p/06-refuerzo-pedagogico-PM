@@ -27,23 +27,49 @@ import { calcularValor, estadoUI, type ContadorConfig } from '@/domain/counter';
 export default function Home() {
   // 🔎 ¿Por qué el estado arranca en 0? ¿Qué cambiaría si empezara en otro valor?
   const [valor, setValor] = useState(0);
+  const [empanadas, setEmpanadas] = useState(0);
+  const [jugos, setJugos] = useState(0);
 
   // 🔎 ¿Qué representa cada campo? ¿Por qué `valor` viene del estado y el resto son fijos?
   const config: ContadorConfig = { valor, paso: 1, minimo: 0, maximo: 10 };
+  const configEmpanadas: ContadorConfig = { valor: empanadas, paso: 1, minimo: 0, maximo: 10 };
+  const configJugos: ContadorConfig = { valor: jugos, paso: 1, minimo: 0, maximo: 10 };
 
   // 🔎 ¿Por qué calculamos `estado` y no lo guardamos en otro useState?
   const estado = estadoUI(valor, config);
+  const estadoEmpanadas = estadoUI(empanadas, configEmpanadas);
+  const estadoJugos = estadoUI(jugos, configJugos);
 
   // 👉 Antes de implementar, revisa el TSDoc de `calcularValor` (src/domain/counter.ts):
   //    ahí está el contrato; tú escribes el cómo.
   const incrementar = () => {
-    
+    setValor(calcularValor(config, 'incrementar'));
   };
   const decrementar = () => {
-    
+    setValor(calcularValor(config, 'decrementar'));
   };
   const reiniciar = () => {
-    
+    setValor(0);
+  };
+
+  const incrementarEmpanadas = () => {
+    setEmpanadas(calcularValor(configEmpanadas, 'incrementar'));
+  };
+  const decrementarEmpanadas = () => {
+    setEmpanadas(calcularValor(configEmpanadas, 'decrementar'));
+  };
+  const reiniciarEmpanadas = () => {
+    setEmpanadas(0);
+  };
+
+  const incrementarJugos = () => {
+    setJugos(calcularValor(configJugos, 'incrementar'));
+  };
+  const decrementarJugos = () => {
+    setJugos(calcularValor(configJugos, 'decrementar'));
+  };
+  const reiniciarJugos = () => {
+    setJugos(0);
   };
 
   return (
@@ -52,27 +78,62 @@ export default function Home() {
         <Text style={styles.title}>Bar Salesiano · Contadores</Text>
 
         {/* 📖 ¿Qué props acepta? Revisa el TSDoc de <ContadorDisplay> */}
-        <ContadorDisplay valor={valor} etiqueta="Sanduches" />
-
-        {/* 📖 Revisa el TSDoc de <BotonContador>: props, variantes y feedback */}
-        <View style={styles.actions}>
-          <BotonContador
-            label="+1"
-            onPress={incrementar}
-            variante="primary"
-            disabled={estado === 'MAXIMO'}
-          />
-          <BotonContador
-            label="-1"
-            onPress={decrementar}
-            variante="secondary"
-            disabled={estado === 'MINIMO'}
-          />
-          <BotonContador label="Reiniciar" onPress={reiniciar} variante="danger" />
+        <View style={styles.counterCard}>
+          <ContadorDisplay valor={valor} etiqueta="Sanduches" />
+          <View style={styles.actions}>
+            <BotonContador
+              label="+1"
+              onPress={incrementar}
+              variante="primary"
+              disabled={estado === 'MAXIMO'}
+            />
+            <BotonContador
+              label="-1"
+              onPress={decrementar}
+              variante="secondary"
+              disabled={estado === 'MINIMO'}
+            />
+            <BotonContador label="Reiniciar" onPress={reiniciar} variante="danger" />
+          </View>
         </View>
 
-        {/* 👇 TODO INTEGRADOR: agrega los contadores de Empanadas y Jugos
-            repitiendo el estado (const [.., ..] = useState(0)) y sus botones. */}
+        <View style={styles.counterCard}>
+          <ContadorDisplay valor={empanadas} etiqueta="Empanadas" />
+          <View style={styles.actions}>
+            <BotonContador
+              label="+1"
+              onPress={incrementarEmpanadas}
+              variante="primary"
+              disabled={estadoEmpanadas === 'MAXIMO'}
+            />
+            <BotonContador
+              label="-1"
+              onPress={decrementarEmpanadas}
+              variante="secondary"
+              disabled={estadoEmpanadas === 'MINIMO'}
+            />
+            <BotonContador label="Reiniciar" onPress={reiniciarEmpanadas} variante="danger" />
+          </View>
+        </View>
+
+        <View style={styles.counterCard}>
+          <ContadorDisplay valor={jugos} etiqueta="Jugos" />
+          <View style={styles.actions}>
+            <BotonContador
+              label="+1"
+              onPress={incrementarJugos}
+              variante="primary"
+              disabled={estadoJugos === 'MAXIMO'}
+            />
+            <BotonContador
+              label="-1"
+              onPress={decrementarJugos}
+              variante="secondary"
+              disabled={estadoJugos === 'MINIMO'}
+            />
+            <BotonContador label="Reiniciar" onPress={reiniciarJugos} variante="danger" />
+          </View>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -98,5 +159,8 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 10,
     justifyContent: 'center',
+  },
+  counterCard: {
+    gap: 12,
   },
 });
